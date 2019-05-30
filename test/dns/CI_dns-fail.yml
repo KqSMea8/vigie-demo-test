@@ -1,0 +1,43 @@
+name: CI - DNS Testsuite Fail
+
+config:
+  frequency:
+    dns: 1m
+  timeout:
+    dns: 1s
+  concurrency:
+    global: 99
+  retrydelay:
+    dns: 2s
+  retry:
+    dns: 0
+
+testcases:
+
+  - name: CI DNS Fail - Do not exist
+    steps:
+
+    - type: dns
+      FQDN: "idonotexist.vigie.dev"
+      RecordType: "A"
+      assertions:
+        - probeinfo.status ShouldEqual -3
+        - probeinfo.probecode ShouldEqual 404
+
+    - type: dns
+      FQDN: "nordoi.vigie.dev"
+      RecordType: "A"
+      assertions:
+        - probeinfo.status ShouldEqual -3
+
+    - type: dns
+      FQDN: "bad-assert.vigie.dev"
+      RecordType: "A"
+      assertions:
+        - probeinfo.status ShouldEqual -3
+
+    - type: dns
+      FQDN: "timeout.vigie.dev"
+      RecordType: "A"
+      assertions:
+        - probeinfo.status ShouldEqual -3

@@ -1,0 +1,32 @@
+name: CI X509 Web
+
+config:
+  frequency:
+    x509: 1m
+  Concurrency:
+    global: 2
+  delay:
+    x509: 4s
+
+testcases:
+
+  - name: GET CI Vigie
+    steps:
+      - type: x509
+        host: vigie.dev
+        port: 443
+        assertions:
+          - valid == true
+          - expired == false
+          - rootcertificate.isca == true
+
+      - type: x509
+        host: abc.xyz
+        port: 443
+        assertions:
+          - valid == true
+          - daybeforeexpiration > 15
+          - expired == false
+          - endcertificate.dnsnames $$ "*.golang.com"
+          - rootcertificate.publickeyalgorithm != "3DES"
+          - endcertificate.signaturealgorithm == "SHA256-RSA"

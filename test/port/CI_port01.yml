@@ -1,0 +1,42 @@
+name: CI - Port Testsuite01
+
+config:
+  frequency:
+    port: 10s
+  timeout:
+    port: 1s
+  concurrency:
+    global: 99
+  retrydelay:
+    port: 2s
+  retry:
+    port: 0
+
+testcases:
+
+  - name: CI Port TCP
+
+    steps:
+      - type: port
+        host: "vigie.dev"
+        protocol: "tcp"
+        port: 80
+        assertions:
+          - reachable == true
+          - probeinfo.responsetime < 1
+
+      - type: port
+        host: "vigie.dev"
+        protocol: "tcp"
+        port: 443
+        assertions:
+          - reachable == true
+          - probeinfo.responsetime < 3
+
+      - type: port
+        host: "127.0.0.1"
+        protocol: "tcp"
+        port: 1
+        assertions:
+          - reachable == false
+          - probeinfo.responsetime < 0.1

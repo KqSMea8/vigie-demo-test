@@ -1,0 +1,62 @@
+name: CI - DNS Testsuite01
+
+config:
+  frequency:
+    dns: 1m
+  timeout:
+    dns: 1s
+  concurrency:
+    global: 99
+  retrydelay:
+    dns: 2s
+  retry:
+    dns: 0
+
+testcases:
+
+  - name: CI DNS TXT - 100% OK
+    steps:
+    - type: dns
+      FQDN: "txt1.dns.test.vigie.dev"
+      RecordType: "TXT"
+      assertions:
+        - answer == "Vigie"
+
+    - type: dns
+      FQDN: "txt1a.dns.test.vigie.dev."
+      RecordType: "TXT"
+      assertions:
+        - answer ~$ "3 c"
+
+    - type: dns
+      FQDN: "txtadv2.dns.test.vigie.dev."
+      RecordType: "TXT"
+      assertions:
+        - answer == ["a 1","b 2"]
+        - answer ~$ "a 1"
+
+    - type: dns
+      FQDN: "txt3.dns.test.vigie.dev."
+      RecordType: "TXT"
+      assertions:
+        - answer == ["a","b","c"]
+
+    - type: dns
+      FQDN: "dnsTXT02.test.vigie.vincoll.io."
+      RecordType: "TXT"
+      assertions:
+        - answer == "(ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ Vigie"
+
+    - type: dns
+      FQDN: "a6.dns.test.vigie.dev."
+      RecordType: "A"
+      assertions:
+        - answer == ["0.0.0.1", "0.0.0.2", "0.0.0.3","1.0.0.0", "2.0.0.0", "3.0.0.0"]
+
+  - name: CI DNS A - KO
+    steps:
+       - type: dns
+         FQDN: "a1.dns.test.vigie.dev."
+         RecordType: "A"
+         assertions:
+           - answer == "0.0.0.1"

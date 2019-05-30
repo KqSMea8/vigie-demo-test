@@ -1,0 +1,55 @@
+name: TestSuite Stegoscope
+
+config:
+  frequency:
+    hash: 40s
+  timeout:
+    hash: 3s
+  concurrency:
+    global: 2
+  retrydelay:
+    hash: 2s
+  retry:
+    hash: 0
+
+vars:
+  http.protocol: https
+  cihttpbin: 127.0.0.1:6080
+  ciwebserver: 127.0.0.1:6081
+
+testcases:
+
+- name: CI Apache HASH MD5 Majuscule
+  frequency: 2000
+  steps:
+  - type: hash
+    algo: md5
+    url: http://127.0.0.1:6081/index.html
+    retry: 3
+    delay: 2
+    assertions:
+    - hash == "5388f60d7695cb57b87c799ee62d20b2"
+    # 4af002a7c5c01d9cd77e2335b7a30e87
+
+- name: CI HASH MD5
+  frequency: 2000
+  steps:
+  - type: hash
+    algo: md5
+    url: http://localhost:6080/robots.txt
+    retry: 3
+    delay: 2
+    assertions:
+    - hash == "46fd03688e49c6b6b0a2b7d3553c1e42"
+
+- name: CI HASH SHA512
+  frequency: 2000
+  steps:
+  - type: hash
+    algo: sha512
+    url: http://localhost:6080/robots.txt
+    retry: 3
+    delay: 2
+    assertions:
+    - hash == "d2c1588d95604879545c88ec910fb9b8302a61bc65c4ddac38ad723228d5dcb2f9c75bbda0a9c1f846285ae440f5b0e4d72bde4ef56315a2b71816daa05b5427"
+

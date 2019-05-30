@@ -1,0 +1,4 @@
+vars:
+  http.protocol: https
+  cihttpbin: 127.0.0.1:6080
+  ciwebserver: 127.0.0.1:6081
